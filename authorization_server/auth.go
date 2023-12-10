@@ -1,7 +1,6 @@
 package authorizationserver
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -20,16 +19,14 @@ func authEndpoint(w http.ResponseWriter, r *http.Request) {
 		oauth2.WriteAuthorizeError(ctx, w, authorizeRequest, err)
 		return 
 	}
-	
-	if !checkIfSessionValidated(w, r) {
-		return
-	}
 
-	for _, scope := range r.PostForm["scopes"] {
-		authorizeRequest.GrantScope(scope)
-	}
 
-	mySessionData := newSession("peter")
+	// for _, scope := range r.PostForm["scopes"] {
+	// 	authorizeRequest.GrantScope(scope)
+	// }
+
+	cookie, err := r.Cookie("sessionId")
+	mySessionData := newSession(cookie.Value)
 
 	response, err := oauth2.NewAuthorizeResponse(ctx, authorizeRequest, mySessionData)
 
@@ -42,43 +39,6 @@ func authEndpoint(w http.ResponseWriter, r *http.Request) {
 	// Last but not least, send the response!
 	oauth2.WriteAuthorizeResponse(ctx, w, authorizeRequest, response)
 
-}
-
-func checkIfSessionValidated(w http.ResponseWriter, request *http.Request) bool {
-	cookie, err := request.Cookie("sessionId")
-	if err != nil {
-		log.Println("Not found the session for ", request.Header)
-		buildLoginPage(w, request)
-		return false
-	}
-
-	// Get the session ID from the cookie value
-	sessionID := cookie.Value
-	if (sessionID == "") {
-		buildLoginPage(w, request)
-	}
-	_, ok := sessions[sessionID]
-	if (!ok) {
-		buildLoginPage(w, request)
-		return false
-	}
-	return true
-}
-
-func buildLoginPage(w http.ResponseWriter, request *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.Write([]byte(`<h1>Login page</h1>`))
-		w.Write([]byte(fmt.Sprintf(`
-			<p>Howdy! This is the log in page. For this example, it is enough to supply the username.</p>
-			<form method="post">
-				<p>
-					By logging in, you consent to grant these scopes:
-					<ul>%s</ul>
-				</p>
-				<input type="text" name="username" /> <small>try peter</small><br>
-				<input type="submit">
-			</form>
-		`, "profile")))
 }
 
 func newSession(user string) *openid.DefaultSession {
