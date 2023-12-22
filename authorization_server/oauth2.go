@@ -31,5 +31,9 @@ func RegisterOAuth2Handlers(router *gin.Engine) {
 	router.GET("/oauth2/auth", func(ctx *gin.Context) {
 		authEndpoint(ctx.Writer, ctx.Request)
 	})
+
+	router.POST("oauth2/token", func(ctx *gin.Context) {
+		tokenEndpoint(ctx.Writer, ctx.Request)
+	})
 }
 

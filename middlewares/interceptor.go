@@ -27,6 +27,12 @@ func (authInterceptor AuthInterceptor) GetSessionInterceptor() gin.HandlerFunc {
 		sessionId, _ := c.Cookie("sessionId")
 
 		log.Printf("full path: %s", c.Request.RequestURI)
+
+		if strings.HasPrefix(c.Request.RequestURI, "/oauth2/token") {
+			c.Next()
+			return
+		}
+
 		if strings.HasPrefix(c.Request.RequestURI, "/login") {
 			if sessionId == "" && request.PostForm.Get("username") == "" {
 				RedirectUserToLogin(rw, c, false)

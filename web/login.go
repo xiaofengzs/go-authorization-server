@@ -21,14 +21,20 @@ func RegisterHttpRequestHandlers(router *gin.Engine, redisClient *redis.Client) 
 		redisClient.Set(ctx.Request.Context(), sessionId, sessionId, time.Minute * 30)
 		ctx.SetCookie("sessionId", sessionId, 1800, "", "localhost", false, false )
 		
-		
 		redirectUrl := ctx.Query("redirect_url")
-		location, err := base64.StdEncoding.DecodeString(redirectUrl)
-	
-		if err != nil {
-			ctx.String(http.StatusBadRequest, "Invalid base64 data")
-			return
+		var location string = ""
+		if redirectUrl != "" {
+			locationByte, err := base64.StdEncoding.DecodeString(redirectUrl)
+			if err != nil {
+				ctx.String(http.StatusBadRequest, "Invalid base64 data")
+				return
+			}
+			location = string(locationByte)
+		} else {
+			location = "/index"
 		}
+	
+		
 
 		ctx.Redirect(302, string(location))
 	})
