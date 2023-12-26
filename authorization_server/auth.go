@@ -14,12 +14,11 @@ var sessions map[string]bool = make(map[string]bool)
 func authEndpoint(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	authorizeRequest, err := oauth2.NewAuthorizeRequest(ctx, r)
-	if (err != nil) {
+	if err != nil {
 		log.Printf("Error in building AuthorizeRequest, err: %s", err)
 		oauth2.WriteAuthorizeError(ctx, w, authorizeRequest, err)
-		return 
+		return
 	}
-
 
 	// for _, scope := range r.PostForm["scopes"] {
 	// 	authorizeRequest.GrantScope(scope)

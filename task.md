@@ -7,4 +7,5 @@
    - if login is from redirect, should go back to origin url - finished
 
 3. Implement code exchange token
+4. Persist client data
 

@@ -20,6 +20,7 @@ var (
 	}
 
 	store = storage.NewExampleStore()
+	
 
 	privateKey, _ = rsa.GenerateKey(rand.Reader, 2048)
 

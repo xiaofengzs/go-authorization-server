@@ -14,3 +14,14 @@ curl -X POST \
   -d "client_secret=foobar" \
   -d "redirect_uri=localhost:8080/callback" \
   -d "grant_type=authorization_code"
+
+
+```bash
+curl -X POST \
+  http://localhost:8080/client \
+  -H 'Content-Type: application/json' \
+  -b 'sessionId=bb8b8a0c-4936-45fc-8bc8-e18d69f97e67' \
+  -d '{
+  "id": "this-is-my-client-id"
+}'
+```

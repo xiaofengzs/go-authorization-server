@@ -15,10 +15,10 @@ import (
 func main() {
 
 	client := redis.NewClient(&redis.Options{
-        Addr:     "localhost:6379",
-        Password: "", // no password set
-        DB:       0,  // use default DB
-    })
+		Addr:     "localhost:6379",
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
 
 	val, err := client.Get(context.Background(), "").Result()
 
@@ -36,6 +36,7 @@ func main() {
 	redisClient := cache.BuildRedisClient()
 	router := gin.Default()
 	web.RegisterHttpRequestHandlers(router, redisClient)
+	web.RegisterClientHandlers(router)
 
 	// ### oauth2 server ###
 	authorizationserver.RegisterOAuth2Handlers(router) // the authorization server (fosite)
